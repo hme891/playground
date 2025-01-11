@@ -1,0 +1,10 @@
+---
+consul_kv_path: "{{client}}/aws/{{region}}/{{cluster}}"
+working_directory: "/var/lib/awx/{{cluster}}"
+ca_valid_days: 3650
+valid_days: 3650
+country_name: "AU"
+state: "NSW"
+locality: "Sydney"
+organization: "Accenture"
+organizational_unit: "AC2"

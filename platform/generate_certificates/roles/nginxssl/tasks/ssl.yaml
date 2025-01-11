@@ -1,0 +1,36 @@
+ 
+
+    
+- name: Create working directory
+  file:
+    path: "{{ playbook_dir }}/certs"
+    state: "directory"
+    mode: 0755
+
+- name: Create key pair for the server
+  openssl_privatekey:
+    path: "{{ playbook_dir }}/certs/server.rsa"
+    size: 2048
+
+- name: Create certificate signing request
+  openssl_csr:
+    common_name: "emin.default.test.com"
+    country_name: "CN"
+    email_address: "emin@test.com"
+    locality_name: "DaLian"
+    organization_name: "test company"
+    path: "{{ playbook_dir }}/certs/server.csr"
+    subject_alt_name: 
+      - "DNS:*.test.com"
+      - "DNS:test.com"
+    privatekey_path: "{{ playbook_dir }}/certs/server.rsa"
+
+ 
+- name: Create self-signed certificate
+  openssl_certificate:
+    csr_path: "{{ playbook_dir }}/certs/server.csr"
+    path: "{{ playbook_dir }}/certs/server.crt"
+    provider: selfsigned
+    privatekey_path: "{{ playbook_dir }}/certs/server.rsa"
+
+ 

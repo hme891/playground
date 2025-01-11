@@ -1,0 +1,21 @@
+---
+- name: Create working directory
+  file:
+    path: "{{working_directory}}"
+    state: "directory"
+    mode: 0755
+
+- name: copy shell generateSelfSignedCertificates.sh
+  copy:
+    src: "{{role_path}}/scripts/generateSelfSignedCertificates.sh"
+    dest: "{{working_directory}}/generateSelfSignedCertificates.sh"
+    mode: 0755
+
+- name: Create CA folder under working directory
+  file:
+    path: "{{working_directory}}/ca"
+    state: "directory"
+    mode: 0755
+
+- name: Include task to run generateSelfSignedCert script
+  include_tasks: "aws.yaml"

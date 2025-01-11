@@ -1,0 +1,36 @@
+- name: remove the default page 
+  win_file:
+    path: "{{nginx_home}}\\html\\index.html"
+    state: absent
+
+ 
+- name: update the main page 
+  win_copy:
+    src: index.html
+    dest: "{{nginx_home}}\\html\\index.html"
+
+    
+- name: Create directory for SSL certificates
+  win_file:
+    path: "{{ssl_dir}}"
+    state: directory
+ 
+- name: copy the certificates
+  win_copy:
+    src: "files/certs/server.{{ item }}"
+    dest: "{{ssl_dir}}\\server.{{ item }}"
+  with_items:
+    - "crt"
+    - "rsa"
+ 
+- name: Copy nginx configuration file with HTTPS setup
+  win_template:
+    src: nginx.conf
+    dest: "{{nginx_home}}\\conf\\nginx.conf"
+    backup: yes
+
+ 
+- name: Restart Nginx service
+  win_service:
+    name: nginx
+    state: restarted

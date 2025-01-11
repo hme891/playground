@@ -1,0 +1,28 @@
+events {
+    worker_connections 1024;
+}
+
+http {
+
+    server {
+        listen 443 ssl;
+        server_name {{server_name}};
+
+        ssl_certificate ../ssl/server.crt;
+        ssl_certificate_key ../ssl/server.key;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name {{server_name}};
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+}

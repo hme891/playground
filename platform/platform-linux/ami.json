@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "name": "nginx-linux-ami",
+      "builder_type": "amazon-ebs",
+      "build_time": 1736504265,
+      "files": null,
+      "artifact_id": "ap-northeast-1:ami-01d484ad7ed712a3c",
+      "packer_run_uuid": "b3d1dd6f-0505-23a0-43d1-314e659f304a",
+      "custom_data": null
+    }
+  ],
+  "last_run_uuid": "b3d1dd6f-0505-23a0-43d1-314e659f304a"
+}

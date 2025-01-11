@@ -1,0 +1,5 @@
+
+nginx_version : "1.27.3"
+nginx_home: "C:\\tools\\nginx-{{nginx_version}}"
+ssl_dir: "{{nginx_home}}\\ssl"
+server_name: "_"

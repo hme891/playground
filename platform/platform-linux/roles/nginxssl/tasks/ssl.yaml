@@ -1,0 +1,40 @@
+- name: remove the default page
+  file:
+    path: /var/www/html/index.nginx-debian.html
+    state: absent
+
+- name: update the main page
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
+
+- name: Create working directory
+  file:
+    path: "/etc/nginx/ssl"
+    state: "directory"
+    mode: 0755
+- name: copy the certificate to the ssl folder
+  copy:
+    src: "certs/server.{{ item }}"
+    dest: "/etc/nginx/ssl/server.{{ item }}"
+  with_items:
+    - "crt"
+    - "rsa"
+
+- name: render the nginx config
+  template:
+    src: "etc/nginx/nginx.conf.j2"
+    dest: "/etc/nginx/nginx.conf"
+    group: "root"
+    owner: "root"
+    mode: "0644"
+
+- name: restart the nginx
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: Ensure nginx is running
+  systemd:
+    name: nginx
+    state: started

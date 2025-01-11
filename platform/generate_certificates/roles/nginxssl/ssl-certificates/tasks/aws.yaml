@@ -1,0 +1,65 @@
+---
+- name: Download CA Cert
+  uri:
+    url: "{{consul_url}}/v1/kv/{{consul_kv_path}}/ca/ssl_certificate?raw=true"
+    validate_certs: "{{verify_ssl}}"
+    return_content: yes
+  register: cert
+- name: Create rootCA.pem
+  copy:
+    dest: "{{working_directory}}/ca/rootCA.pem"
+    content: "{{cert.content}}"
+    mode: 0755
+
+- name: Download CA Key
+  uri:
+    url: "{{consul_url}}/v1/kv/{{consul_kv_path}}/ca/ssl_key?raw=true"
+    validate_certs: "{{verify_ssl}}"
+    return_content: yes
+  register: key
+- name: Create rootCA.key
+  copy:
+    dest: "{{working_directory}}/ca/rootCA.key"
+    content: "{{key.content}}"
+    mode: 0755
+
+- name: Download CA Cert Chain
+  uri:
+    url: "{{consul_url}}/v1/kv/{{consul_kv_path}}/ca/ssl_certificate_chain?raw=true"
+    validate_certs: "{{verify_ssl}}"
+    return_content: yes
+  register: chain
+  ignore_errors: yes
+- name: Create rootCAchain.pem
+  copy:
+    dest: "{{working_directory}}/ca/rootCAchain.pem"
+    content: "{% if chain.content == '' %}{{cert.content}}{% else %}{{chain.content}}{% endif %}"
+    mode: 0755
+
+- name: Generate application certificates
+  shell: "{{working_directory}}/generateSelfSignedCertificates.sh --ca-chain {{working_directory}}/ca/rootCAchain.pem --ca-certificate {{working_directory}}/ca/rootCA.pem --ca-key {{working_directory}}/ca/rootCA.key --common-name {{item.application}}.{{item.vpc_name}} --consul-uri {{consul_url}}/v1/kv/{{consul_kv_path}}/{{item.vpc_name}}_vpc/{{item.application}} --dns {{item.application}}.{{item.vpc_name}}.{{cluster}}.{{domain}} --output-path {{working_directory}}/{{item.vpc_name}}/{{item.application}} --valid-days {{valid_days}}"
+  with_items:
+    - application: bitbucket
+      vpc_name: devops
+    - application: consul
+      vpc_name: security
+    - application: nexus
+      vpc_name: devops
+    - application: nexus
+      vpc_name: security
+    - application: jenkins
+      vpc_name: devops
+    - application: clair
+      vpc_name: development
+    - application: kafka
+      vpc_name: production
+    - application: vault
+      vpc_name: security
+    - application: adfs
+      vpc_name: security
+    - application: openvas
+      vpc_name: security
+    - application: nginx
+      vpc_name: dmz
+    - application: cyberark-cpm
+      vpc_name: security

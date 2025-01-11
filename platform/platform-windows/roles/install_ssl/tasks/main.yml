@@ -1,0 +1,51 @@
+- name: Print all available facts
+  ansible.builtin.debug:
+    var: ansible_facts
+
+# - name: Change the hostname to sample-hostname
+#   ansible.windows.win_hostname:
+#     name: nginx
+#   register: res
+
+# - name: Reboot
+#   ansible.windows.win_reboot:
+#   when: res.reboot_required
+
+- name: install nginx 
+  win_chocolatey:
+    name: nginx
+    state: present
+    version: "{{nginx_version}}"
+
+- name: install python3 
+  win_chocolatey:
+    name:  python312
+    state: present
+
+- name: Ensure that python312 are present 
+  win_path:
+    elements:
+      - 'C:\ProgramData\chocolatey\bin'
+    scope: user
+ 
+
+- name: configure ssl 
+  include_tasks: ssl.yaml 
+
+- name: Create firewall rule to allow inbound traffic on port 443
+  win_firewall_rule:
+    name: "Allow Inbound HTTPS"
+    localport: 443
+    action: allow
+    direction: in
+    protocol: TCP
+    enabled: yes
+
+- name: Create firewall rule to allow inbound traffic on port 80
+  win_firewall_rule:
+    name: "Allow Inbound HTTPS"
+    localport: 80
+    action: allow
+    direction: in
+    protocol: TCP
+    enabled: yes

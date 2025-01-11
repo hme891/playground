@@ -1,0 +1,47 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_region": "",
+    "base_ami": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "subnet_id": "{{user `subnet_id`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "{{user `aws_region`}}",
+      "source_ami": "ami-0b2cd2a95639e0e5b",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ssh_pty": "true",
+      "ami_name": "nginx-linux-{{timestamp}}",
+      "name": "nginx-linux-ami",
+      "ami_description": "nginx linux ami",
+      "encrypt_boot": true,
+      "tags": {
+        "owner": "emin"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "setup.sh"
+    },
+    {
+      "type": "ansible-local",
+      "inventory_groups": "localhost",
+      "playbook_file": "./nginx-config.yml",
+      "extra_arguments": ["--extra-vars \"app={{user `base_ami`}} \""],
+      "role_paths": ["roles/baseconfig", "roles/nginxssl"]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "ami.json"
+    }
+  ]
+}

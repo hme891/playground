@@ -1,0 +1,8 @@
+- debug:
+    msg: i will run some custom script or commands to configure the {{ app }} ami.
+
+- name: create a new file for test
+  copy:
+    dest: "/tmp/build"
+    content: |
+      true

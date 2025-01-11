@@ -1,0 +1,8 @@
+- name: Install nginx
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
+
+- name: configure ssl
+  include_tasks: ssl.yaml
