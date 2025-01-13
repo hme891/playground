@@ -6,5 +6,5 @@ valid_days: 3650
 country_name: "AU"
 state: "NSW"
 locality: "Sydney"
-organization: "Accenture"
-organizational_unit: "AC2"
+organization: "YOUNG_ORGANIZATION"
+organizational_unit: "YOUNG_ORGANIZATIONAL_UNIT"

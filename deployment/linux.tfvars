@@ -1,2 +1,2 @@
 platform = "linux"
-ami_id   = "ami-01d484ad7ed712a3c"
+ami_id   = "ami-0e78006b339043466"

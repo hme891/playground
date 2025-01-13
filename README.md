@@ -14,6 +14,11 @@ The Platform stage focuses on creating custom AMIs using HashiCorp Packer. Key f
 - Flexible provisioning using Ansible (both local and remote configurations)
 - Separate build processes for Linux and Windows environments
 
+Code Description:
+
+1. The `platform` directory contains `generate_certificates` which is used to generate SSL certificates.
+2. The `platform-xxx` directories are used to build AMIs (Amazon Machine Images). Each directory contains build files with `.json` or `.hcl` extensions, which include shell/PowerShell scripts and Ansible playbooks for AMI configuration.
+
 ### 2. Deployment Stage
 
 The Deployment stage uses HashiCorp Terraform to provision AWS resources with:
@@ -21,6 +26,11 @@ The Deployment stage uses HashiCorp Terraform to provision AWS resources with:
 - Workspace-based environment management
 - Infrastructure as Code (IaC) approach
 - Support for multiple deployment configurations
+
+Code Description:
+
+1. The `deployment` folder contains scripts to create common AWS resources such as IAM profiles, ACM certificates, keypairs, and other shared components.
+2. Each `platform` folder contains configurations to provision AWS resources using the newly built AMIs.
 
 ## Prerequisites
 
@@ -41,7 +51,8 @@ First, generate SSL certificates for both Linux and Windows platforms.
 
 ```shell
 cd platform/generate_certificates
-ansible-playbook generate_certificate.yaml
+# create and configure the certificate_info_variable.yaml file for certificate information
+ansible-playbook generate_certificate.yml  -e "@certificate_info_variable.yml"
 ```
 
 ![generate_cer](docs/generate_cert.png)
@@ -54,11 +65,17 @@ ansible-playbook generate_certificate.yaml
 cd platform/platform-linux
 
 # Initialize and install required plugins
-packer init .
+
 packer plugins install github.com/hashicorp/amazon
+packer plugins install github.com/hashicorp/ansible
+
+# alternatively, you can convert the json file to HCL using packer hcl2_upgrade -with-annotations nginx.json and initialize the plugin using packer init .
+
+# configure the variables like the credentials, vpc_id and subnets.etc.
+# refer to the variables.json file
 
 # Validate the configuration before building
-packer validate -var-file=variables.json nginx.json
+packer validate -var-file=variables.json  nginx.json
 
 # Build the image
 packer build -var-file=variables.json nginx.json
@@ -79,6 +96,7 @@ The Windows build process differs from Linux in the following ways:
 cd platform-windows
 export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY"
 export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_KEY"
+packer init .
 packer build windows.pkr.hcl
 ```
 

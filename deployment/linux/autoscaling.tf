@@ -24,18 +24,14 @@ resource "aws_launch_configuration" "nginx_lc" {
 }
 
 resource "aws_autoscaling_group" "nginx_linux_asg" {
-  # count = "${var.app_name == "nginx" ? 1 : 1 }"
   count                = 1
   name_prefix          = "${var.app_name}.linux.${var.cluster}.${var.domain}-"
   launch_configuration = aws_launch_configuration.nginx_lc.name
   max_size             = var.max_size
   min_size             = var.min_size
   desired_capacity     = var.desired_capacity
-  #vpc_zone_identifier = ["${element(aws_subnet.nginx.*.id, count.index)}"]
-  vpc_zone_identifier = [var.private_subnet]
-  #vpc_zone_identifier = [var.public_subnet]
-
-  load_balancers = ["${aws_elb.nginx.name}"]
+  vpc_zone_identifier  = [var.private_subnet]
+  load_balancers       = ["${aws_elb.nginx.name}"]
   tag {
     key                 = "Name"
     value               = "${var.app_name}.linux.${var.cluster}.${var.domain}"

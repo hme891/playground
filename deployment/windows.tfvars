@@ -1,2 +1,2 @@
 platform       = "windows"
-windows_ami_id = "ami-0033bee6df7f8d4f2"
+windows_ami_id = "ami-09470689d74435627"

@@ -10,8 +10,6 @@ variable "ami_id" {
 variable "windows_ami_id" {
   default = "ami-xxx"
 }
-variable "vpc_cidr" {}
-# variable "vpc_id" {}
 variable "deployment_id" {}
 variable "domain_name" {}
 variable "cluster" {}
@@ -39,3 +37,4 @@ variable "nginx_windows" {
 variable "platform" {
   default = "linux"
 }
+variable "vpc_cidr" {}

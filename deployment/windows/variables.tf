@@ -12,11 +12,8 @@ variable "vpc_name" {}
 data "aws_availability_zones" "available" {}
 variable "instance_type" {}
 variable "root_volume_type" {}
-variable "instance_profile_name"  {}
+variable "instance_profile_name" {}
 variable "root_volume_size" {}
- 
- 
- 
 variable "app_name" {}
 variable "windows_ami_id" {}
 variable "public_subnet" {}

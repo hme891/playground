@@ -2,15 +2,6 @@
   ansible.builtin.debug:
     var: ansible_facts
 
-# - name: Change the hostname to sample-hostname
-#   ansible.windows.win_hostname:
-#     name: nginx
-#   register: res
-
-# - name: Reboot
-#   ansible.windows.win_reboot:
-#   when: res.reboot_required
-
 - name: install nginx 
   win_chocolatey:
     name: nginx

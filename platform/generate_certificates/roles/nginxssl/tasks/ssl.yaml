@@ -14,15 +14,15 @@
 
 - name: Create certificate signing request
   openssl_csr:
-    common_name: "emin.default.test.com"
-    country_name: "CN"
-    email_address: "emin@test.com"
-    locality_name: "DaLian"
-    organization_name: "test company"
+    common_name: "{{ common_name }}"
+    country_name: "{{ country_name }}"
+    email_address: "{{ email_address }}"
+    locality_name: "{{ locality_name }}"
+    organization_name: "{{ organization_name }}"
     path: "{{ playbook_dir }}/certs/server.csr"
     subject_alt_name: 
-      - "DNS:*.test.com"
-      - "DNS:test.com"
+      - "DNS:*.{{ organization_name }}"
+      - "DNS:{{ organization_name }}"
     privatekey_path: "{{ playbook_dir }}/certs/server.rsa"
 
  

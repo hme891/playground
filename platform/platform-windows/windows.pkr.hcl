@@ -32,7 +32,7 @@ source "amazon-ebs" "firstrun-windows" {
   ami_name     = "windows-nginx-${local.timestamp}"
   communicator = "winrm"
   region       = var.region
-  source_ami_filter { # ami-03bf360037b537786
+  source_ami_filter {  
     filters = {
       name                = "Windows_Server-2022*"
       root-device-type    = "ebs"
@@ -41,7 +41,6 @@ source "amazon-ebs" "firstrun-windows" {
     most_recent = true
     owners      = ["amazon"]
   }
-
   spot_instance_types      = ["t2.medium"]
   spot_price               = "auto"
   ssh_timeout              = "10m"

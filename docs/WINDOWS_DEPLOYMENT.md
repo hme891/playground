@@ -21,13 +21,14 @@ _Verification of running Windows EC2 instance with correct configurations_
 
 #### Application Load Balancer
 
-![ALB Configuration](windows/alb.png)
-_ALB setup with proper target group and listener configurations_
+![ALB Configuration](windows/alb_listener.png)
+_ALB setup with proper instances and listener configurations_
 
-#### Target Group Health
+#### Instance Health
 
-![Target Group Status](windows/tg.png)
-_Target group showing healthy instance status with proper health checks_
+![Instance Status](windows/alb_instance.png)
+![Health Check](windows/alb_healthcheck.png)
+_the target instances showing healthy instance status with proper health checks_
 
 Key points to verify in target group:
 
@@ -43,6 +44,7 @@ After successful deployment, you should see the nginx welcome page running on Wi
 
 ![Nginx Welcome Page](windows/web.png)
 _Nginx successfully running on Windows with HTTPS enabled_
+![Nginx Welcome Page Cert](windows/web_cert.png)
 
 Key points to verify:
 

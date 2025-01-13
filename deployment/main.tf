@@ -7,8 +7,6 @@ provider "aws" {
 
 terraform {
   backend "local" {
-    # workspace_dir = "./workspace"
-    # path="111111.tfstat"
   }
 }
 

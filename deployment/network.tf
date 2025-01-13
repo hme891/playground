@@ -57,11 +57,6 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-
-# resource "aws_route53_zone" "nginx_zone" {
-#   name = var.domain_name
-# }
-
 resource "aws_network_acl" "nginx_network_acl" {
   vpc_id = aws_vpc.main_vpc.id
 

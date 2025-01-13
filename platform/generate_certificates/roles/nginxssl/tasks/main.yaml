@@ -1,25 +1,7 @@
 
-
-# - name: Update the software package repository
-#   apt:
-#     update_cache: yes
- 
-# - name: Install openssl or nginx dependencies
-#   package:
-#     name: "{{ item }}"
-#     state: latest
-#   with_items:
-#     - openssl
- 
- 
  
 - name: configure ssl 
   include_tasks: ssl.yaml 
-    # - name: Add user to group root
-    #   user:
-    #     name: "{{ user }}"
-    #     groups: root
-    #     state: present
 
 - name: distribute the certs to linux platform 
   copy:
@@ -35,25 +17,3 @@
   with_items:
     - "crt"
     - "rsa"   
-    # - name: Add nginx configuration
-    #   copy:
-    #     src: <control-node-path-to>/static-site-config
-    #     dest: /etc/nginx/sites-available/
-    #     owner: "{{ user }}"
-    #     group: root
-    #     mode: '0644'
-
-    # - name: Enable website configuration
-    #   file:
-    #     src: /etc/nginx/sites-available/static-site-config
-    #     dest: /etc/nginx/sites-enabled/static-site-config
-    #     state: link
-
-    # - name: Ensure nginx is running
-    #   systemd:
-    #     name: nginx
-    #     state: started
-    #     enabled: yes
-
-   
-
