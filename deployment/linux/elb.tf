@@ -2,11 +2,11 @@
 resource "aws_elb" "nginx" {
   name     = "${var.app_name}-alb"
   internal = false
-  subnets  = [var.public_subnet]
+  subnets  = data.aws_subnets.public-subnet.ids
   listener {
     instance_port      = 443
     instance_protocol  = "https"
-    ssl_certificate_id = var.ssl_certificate_id
+    ssl_certificate_id = data.aws_acm_certificate.acm.id
     lb_port            = 443
     lb_protocol        = "https"
   }
@@ -28,7 +28,7 @@ resource "aws_elb" "nginx" {
     Name = "${var.app_name}.${var.vpc_name}.${var.cluster}.${var.domain}"
   }
 
-  security_groups = ["${aws_security_group.nginx.id}"]
+  security_groups = data.aws_security_groups.app_sg.ids
 }
 
 resource "aws_proxy_protocol_policy" "proxy-policy" {

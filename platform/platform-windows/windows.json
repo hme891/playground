@@ -1,0 +1,73 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
+    "aws_region": "",
+    "vpc_id": "",
+    "subnet_id": "",
+    "winrm_password": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "subnet_id": "{{user `subnet_id`}}",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "vpc_id": "{{user `vpc_id`}}",
+      "region": "{{user `aws_region`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "Windows_Server-2022*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["amazon"],
+        "most_recent": true
+      },
+      "communicator": "winrm",
+      "spot_instance_types": ["t2.medium"],
+      "spot_price": "auto",
+      "ssh_timeout": "10m",
+      "ssh_username": "Administrator",
+      "ssh_file_transfer_method": "sftp",
+      "pause_before_connecting": "1m",
+      "user_data_file": "./bootstrap_win.ps1",
+      "winrm_password": "{{user `winrm_password`}}",
+      "winrm_username": "Administrator",
+      "winrm_port": "5986",
+      "winrm_use_ssl": "true",
+      "winrm_insecure": "true",
+      "winrm_use_ntlm": "true",
+      "ami_name": "nginx-windows-{{timestamp}}",
+      "name": "nginx-windows-ami",
+      "ami_description": "nginx windows ami",
+      "encrypt_boot": true,
+      "tags": {
+        "owner": "emin"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "script": "files/InstallChoco.ps1"
+    },
+    {
+      "type": "ansible",
+      "playbook_file": "./install-nginx.yml",
+      "use_proxy": false,
+      "extra_arguments": [
+        "--connection",
+        "packer",
+        "--extra-vars",
+        "ansible_python_interpreter='C:\\ProgramData\\chocolatey\\bin\\python3.12.exe' ansible_ssh_timeout=600 ansible_winrm_scheme=https ansible_winrm_server_cert_validation=ignore ansible_connection=winrm ansible_port=5986 ansible_user=Administrator ansible_password=SuperS3cr3t!!!!"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "ami.json"
+    }
+  ]
+}

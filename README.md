@@ -75,10 +75,10 @@ packer plugins install github.com/hashicorp/ansible
 # refer to the variables.json file
 
 # Validate the configuration before building
-packer validate -var-file=variables.json  nginx.json
+packer validate -var-file=variables.json  linux.json
 
 # Build the image
-packer build -var-file=variables.json nginx.json
+packer build -var-file=variables.json linux.json
 ```
 
 ![Linux Build Process](docs/linux/build1.png)
@@ -94,10 +94,10 @@ The Windows build process differs from Linux in the following ways:
 
 ```shell
 cd platform-windows
-export AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY"
-export AWS_SECRET_ACCESS_KEY="YOUR_SECRET_KEY"
-packer init .
-packer build windows.pkr.hcl
+packer plugins install github.com/hashicorp/amazon
+packer plugins install github.com/rgl/windows-update
+packer plugins install github.com/hashicorp/ansible
+packer build -var-file=variables.json windows.json
 ```
 
 ![Windows Build Process](docs/windows/build1.png)
@@ -113,6 +113,20 @@ The deployment process uses Terraform workspaces to manage different environment
 2. EC2 instance profile configuration
 3. SSH key pair generation
 
+#### bootstrap Deployment
+
+Use bootstrap the app base environment before deploy the resources including the vpc, subnets, instance profile, acm and security group for the Application.
+
+```shell
+cd deployment
+terraform init
+terraform workspace new bootstrap
+terraform plan -var-file="bootstrap.tfvars" -var-file="terraform.tfvars" -out bootstrap.plan
+terraform apply "bootstrap.plan"
+```
+
+For detailed Bootstrap deployment screenshots and verification steps, refer to [Bootstrap Deployment Guide](docs/bootstrap.md).
+
 #### Linux Deployment
 
 Update the AMI ID in `linux.tfvars` with the ID generated during the platform build stage.
@@ -120,7 +134,7 @@ Update the AMI ID in `linux.tfvars` with the ID generated during the platform bu
 ```shell
 terraform init
 terraform workspace new linux
-terraform plan -var-file="linux.tfvars" -out linux.plan
+terraform plan -var-file="linux.tfvars" -var-file="terraform.tfvars" -out linux.plan
 terraform apply "linux.plan"
 ```
 
@@ -131,7 +145,7 @@ For detailed Linux deployment screenshots and verification steps, refer to [Linu
 ```shell
 terraform init  # If not already initialized
 terraform workspace new windows
-terraform plan -var-file="windows.tfvars" -out windows.plan
+terraform plan -var-file="windows.tfvars" -var-file="terraform.tfvars" -out windows.plan
 terraform apply windows.plan
 ```
 

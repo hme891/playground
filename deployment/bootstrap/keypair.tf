@@ -13,9 +13,4 @@ resource "aws_key_pair" "nginx_key" {
       chmod 400 aws_keys_pairs.pem
     EOT
   }
-
-
 }
-
-
-

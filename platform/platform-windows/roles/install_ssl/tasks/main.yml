@@ -2,26 +2,14 @@
   ansible.builtin.debug:
     var: ansible_facts
 
-- name: install nginx 
+- name: install nginx
   win_chocolatey:
     name: nginx
     state: present
     version: "{{nginx_version}}"
 
-- name: install python3 
-  win_chocolatey:
-    name:  python312
-    state: present
-
-- name: Ensure that python312 are present 
-  win_path:
-    elements:
-      - 'C:\ProgramData\chocolatey\bin'
-    scope: user
- 
-
-- name: configure ssl 
-  include_tasks: ssl.yaml 
+- name: configure ssl
+  include_tasks: ssl.yaml
 
 - name: Create firewall rule to allow inbound traffic on port 443
   win_firewall_rule:
